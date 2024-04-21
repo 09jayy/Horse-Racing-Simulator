@@ -227,7 +227,7 @@ public class Race {
      * Print the race on the terminal
      */
     private void printRace() {
-        // System.out.print("\033[H\033[2J"); // clear the terminal window
+        System.out.print("\033[H\033[2J"); // clear the terminal window
 
         multiplePrint('=', raceLength + 3); // top edge of track
         System.out.println();
