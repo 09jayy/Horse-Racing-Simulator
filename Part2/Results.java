@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.util.List;
 import java.io.*;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class Results extends JPanel implements HorseRaceWindowListener {
     private JLabel winnersLabel;
@@ -13,6 +14,7 @@ public class Results extends JPanel implements HorseRaceWindowListener {
     private JPanel statsPanel;
     private int[] wins;
     private int[] races;
+    private List<Integer> moneyHistory;
 
     public Results() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -132,8 +134,8 @@ public class Results extends JPanel implements HorseRaceWindowListener {
         // paths
         int index = 0;
         for (Horse horse : horsesInRace) {
-            final String inputFilePath = getHistroyPathInput(horse.getName());
-            final String tempFilePath = getHistoryPathTemp(horse.getName());
+            String inputFilePath = getHistroyPathInput(horse.getName());
+            String tempFilePath = getHistoryPathTemp(horse.getName());
 
             // write history to file
             try (BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
@@ -187,6 +189,43 @@ public class Results extends JPanel implements HorseRaceWindowListener {
         }
 
         newMoneyLabel.setText("New Balance: " + balance);
+
+        updateBetHistory(balance);
+    }
+
+    public void updateBetHistory(int balance) {
+        moneyHistory = new LinkedList<>();
+        final String inputFilePath = "Part2/data/history/bet_history.txt";
+        final String tempFilePath = "Part2/data/history/temp_bet_history.txt";
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(tempFilePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                writer.write(line + "\n");
+                moneyHistory.add(Integer.parseInt(line));
+            }
+            moneyHistory.add(balance);
+            writer.write(balance + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        updateTempFile(inputFilePath, tempFilePath);
+        System.out.println(moneyHistory.toString());
+        displayBetHistory(moneyHistory);
+    }
+
+    public void displayBetHistory(List<Integer> moneyHistory) {
+        JFrame lineGraph = new JFrame();
+        lineGraph.setTitle("Money Balance History");
+        lineGraph.setSize(800, 600);
+        lineGraph.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        lineGraph.setLocationRelativeTo(null);
+
+        JPanel graphPanel = new BetHistoryGraph(moneyHistory);
+        lineGraph.add(graphPanel);
+        lineGraph.setVisible(true);
     }
 
     public void updateStats(List<Horse> winners, Horse[] horsesInRace, int trackLength) {
@@ -214,6 +253,7 @@ public class Results extends JPanel implements HorseRaceWindowListener {
             statsPanel.add(speed);
             statsPanel.add(timeTaken);
             statsPanel.add(winRate);
+            statsPanel.add(new JLabel(" "));
         }
         add(statsPanel);
     }
