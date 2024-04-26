@@ -10,13 +10,14 @@ public class HorseRacingSim extends JFrame {
     public HorseRacingSim() {
         setTitle("Horse Race Simulator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 500);
+        setSize(800, 800);
         setLocationRelativeTo(null);
 
         setLayout(new CardLayout());
         add(new StartMenu());
         add(new TrackSettings());
         add(new BetMenu());
+        add(new Results());
 
         raceWindow = new HorseRaceWindow();
     }

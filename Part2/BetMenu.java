@@ -4,14 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import javax.swing.event.ChangeListener;
+import java.lang.Math;
 
 public class BetMenu extends JPanel implements TrackSettingsListener {
     private JLabel trackLengthLabel;
     private JLabel selectedHorsesLabel;
+    private JPanel betPanel;
+    private static JTextField[] betFields;
     private static Horse[] horsesInRace;
     private static int trackLength;
     private static List<BetMenuListener> listeners = new ArrayList<>();
@@ -20,16 +23,16 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
         int money = getMoney();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JLabel trackLength = new JLabel(Integer.toString(TrackSettings.getTrackLength()));
-        add(trackLength);
+        trackLengthLabel = new JLabel();
+        add(trackLengthLabel);
 
-        JLabel selectedHorses = new JLabel(TrackSettings.getSelectedHorses().toString());
-        add(selectedHorses);
+        selectedHorsesLabel = new JLabel();
+        add(selectedHorsesLabel);
 
-        System.out.println(TrackSettings.getSelectedHorses()[0]);
-
-        JLabel moneyLabel = new JLabel(Integer.toString(money));
+        JLabel moneyLabel = new JLabel("Current Balance: " + Integer.toString(money));
         add(moneyLabel);
+
+        betPanel = new JPanel();
 
         // Register BetMenu as a listener for trackLength changes
         TrackSettings.addTrackSettingsListener(this);
@@ -57,20 +60,36 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
     }
 
     // Update the label when trackLength changes
-    public void trackLengthChanged(int newTrackLength) {
+    public void updateTrackAndHorses(int newTrackLength, List<Integer> newHorsesInRace) {
+        trackLengthLabel.setText("Track Length: " + newTrackLength);
+        selectedHorsesLabel.setText("Selected Horses: " + formatHorses(newHorsesInRace));
         trackLength = newTrackLength;
-        trackLengthLabel = (JLabel) getComponent(0);
-        trackLengthLabel.setText(Integer.toString(newTrackLength));
-    }
+        horsesInRace = createHorses(newHorsesInRace);
 
-    // Update the label when selectedHorses changes
-    public void selectedHorsesChanged(List<Integer> newSelectedHorses) {
-        selectedHorsesLabel = (JLabel) getComponent(1);
-        selectedHorsesLabel.setText(newSelectedHorses.toString());
-        horsesInRace = createHorses(newSelectedHorses);
+        // get odds
+        double[] odds = getOdds();
+        double sigmaOdds = 0;
 
-        for (Horse horse : horsesInRace) {
-            System.out.println(horse.toString());
+        for (double odd : odds) {
+            sigmaOdds += odd;
+        }
+
+        for (int i = 0; i < odds.length; i++) {
+            odds[i] = Math.round(odds[i] / sigmaOdds * 100);
+        }
+
+        // update betPanel
+        betPanel.setLayout(new GridLayout(newHorsesInRace.size(), 3));
+        add(betPanel);
+        betFields = new JTextField[newHorsesInRace.size()];
+
+        for (int i = 0; i < newHorsesInRace.size(); i++) {
+            JLabel horseLabel = new JLabel("Horse " + newHorsesInRace.get(i));
+            betPanel.add(horseLabel);
+            JLabel oddsLabel = new JLabel("Odds: " + odds[i] + "%");
+            betPanel.add(oddsLabel);
+            betFields[i] = new JTextField();
+            betPanel.add(betFields[i]);
         }
     }
 
@@ -79,8 +98,6 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
         int numHorses = selectedHorses.size();
         Horse[] horses = new Horse[numHorses];
         double[] confidence = getConfidenceFromFile(selectedHorses);
-
-        System.out.println((TrackSettings.getSelectedHorses().toString()));
 
         for (int i = 0; i < numHorses; i++) {
             horses[i] = new Horse(selectedHorses.get(i).toString(),
@@ -99,7 +116,6 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
 
             while ((line = reader.readLine()) != null && indexPointer < selectedHorses.size()) {
                 String[] horseData = line.split(",");
-                System.out.println(horseData.toString());
 
                 if (horseData[0].equals(selectedHorses.get(indexPointer).toString())) {
                     confidence[indexPointer] = Double.parseDouble(horseData[2]);
@@ -113,7 +129,7 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
         return confidence;
     }
 
-    private int getMoney() {
+    public static int getMoney() {
         int money = 0;
 
         try (BufferedReader reader = new BufferedReader(new FileReader("Part2/data/money.txt"))) {
@@ -132,7 +148,57 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
     public static void notifyListeners() {
         System.out.println("Notifying listeners");
         for (BetMenuListener listener : listeners) {
-            listener.startRace(trackLength, horsesInRace);
+            listener.startRace(trackLength, horsesInRace, betFields);
         }
+    }
+
+    public String formatHorses(List<Integer> horses) {
+        String formattedHorses = "";
+        for (int i = 0; i < horses.size(); i++) {
+            formattedHorses += "Horse " + horses.get(i);
+            if (i < horses.size() - 1) {
+                formattedHorses += ", ";
+            }
+        }
+        return formattedHorses;
+    }
+
+    public double[] getOdds() {
+        double[] odds = new double[horsesInRace.length];
+
+        for (int i = 0; i < horsesInRace.length; i++) {
+
+            try (BufferedReader reader = new BufferedReader(
+                    new FileReader("Part2/data/history/" + horsesInRace[i].getName() + "_history.csv"))) {
+                String line;
+                int numWins = 0;
+                int numRaces = 0;
+                int allRaceLength = 0;
+                while ((line = reader.readLine()) != null) {
+                    String[] data = line.split(",");
+
+                    numWins = (data[0].equals("1")) ? numWins + 1 : numWins;
+                    numRaces++;
+                    allRaceLength += Integer.parseInt(data[1]);
+                }
+
+                numWins = (numWins == 0) ? 1 : numWins;
+                numRaces = (numRaces == 0) ? 1 : numRaces;
+                allRaceLength = (allRaceLength == 0) ? 1 : allRaceLength;
+
+                System.out
+                        .println(horsesInRace[i].getName() + " " + numWins + " " + numRaces + " " + allRaceLength + " "
+                                + horsesInRace[i].getConfidence());
+                double odd = ((double) numWins / (double) numRaces) * ((double) allRaceLength / (double) numRaces)
+                        * ((double) horsesInRace[i].getConfidence());
+                System.out.println(odd);
+                odds[i] = odd;
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println(Arrays.toString(odds));
+        return odds;
     }
 }

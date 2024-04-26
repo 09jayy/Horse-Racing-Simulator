@@ -101,15 +101,14 @@ public class TrackSettings extends JPanel {
     // Notify all registered listeners when trackLength changes
     private static void notifyListeners() {
         for (TrackSettingsListener listener : listeners) {
-            listener.trackLengthChanged(trackLengthSlider.getValue());
-
             List<Integer> selectedHorsesList = new ArrayList<>();
             for (int i = 0; i < selectedHorses.length; i++) {
                 if (selectedHorses[i].isSelected()) {
                     selectedHorsesList.add(i + 1);
                 }
             }
-            listener.selectedHorsesChanged(selectedHorsesList);
+
+            listener.updateTrackAndHorses(trackLengthSlider.getValue(), selectedHorsesList);
         }
     }
 }
