@@ -14,7 +14,6 @@ public class HorseRaceWindow extends JFrame implements BetMenuListener {
     private JLabel finishLabel;
     private JPanel confidencePanel;
     private JLabel[] confidenceLabels;
-    private JTextField[] betFields;
     private List<Horse> winners;
     private static List<HorseRaceWindowListener> listeners = new ArrayList<>();
 
@@ -73,7 +72,6 @@ public class HorseRaceWindow extends JFrame implements BetMenuListener {
 
     public void startRace(int trackLength, Horse[] horsesInRace, JTextField[] betFields) {
         winners = new ArrayList<>();
-        this.betFields = betFields;
 
         setSize(((trackLength + 1) * 72) + 200, horsesInRace.length * 90 + 100); // Set size of window
         HorseRacingSim.getRaceWindow().setVisible(true);

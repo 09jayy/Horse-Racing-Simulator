@@ -2,7 +2,6 @@ package Part2;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class HorseRacingSim extends JFrame {
     private static HorseRaceWindow raceWindow;

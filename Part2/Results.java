@@ -1,16 +1,18 @@
 package Part2;
 
 import javax.swing.*;
-
-import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import java.io.*;
+import java.util.Arrays;
 
 public class Results extends JPanel implements HorseRaceWindowListener {
     private JLabel winnersLabel;
     private JLabel previousMoneyLabel;
     private JLabel newMoneyLabel;
+    private JPanel statsPanel;
+    private int[] wins;
+    private int[] races;
 
     public Results() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -26,6 +28,9 @@ public class Results extends JPanel implements HorseRaceWindowListener {
 
         newMoneyLabel = new JLabel();
         add(newMoneyLabel);
+
+        statsPanel = new JPanel();
+        add(statsPanel);
 
         // quit button
         JButton quitButton = new JButton("Quit");
@@ -44,6 +49,9 @@ public class Results extends JPanel implements HorseRaceWindowListener {
         // Update the results
         System.out.println("Results updated");
 
+        wins = new int[horsesInRace.length];
+        races = new int[horsesInRace.length];
+
         // Update the winners label
         winnersLabel.setText("Winners: " + formatWinners(winners));
 
@@ -53,6 +61,8 @@ public class Results extends JPanel implements HorseRaceWindowListener {
         updateHistoryCSV(winners, horsesInRace, trackLength);
 
         updateMoney(winners, horsesInRace, betFields);
+
+        updateStats(winners, horsesInRace, trackLength);
     }
 
     public void updateHorseCSV(List<Horse> winners, Horse[] horsesInRace) {
@@ -120,6 +130,7 @@ public class Results extends JPanel implements HorseRaceWindowListener {
 
     public void updateHistoryCSV(List<Horse> winners, Horse[] horsesInRace, int trackLength) {
         // paths
+        int index = 0;
         for (Horse horse : horsesInRace) {
             final String inputFilePath = getHistroyPathInput(horse.getName());
             final String tempFilePath = getHistoryPathTemp(horse.getName());
@@ -131,12 +142,19 @@ public class Results extends JPanel implements HorseRaceWindowListener {
 
                 while ((line = reader.readLine()) != null) {
                     writer.write(line + "\n");
+
+                    String[] dataSplit = line.split(",");
+                    if (dataSplit[0].equals("1")) {
+                        wins[index]++;
+                    }
+                    races[index]++;
                 }
                 writer.write(((winners.contains(horse)) ? "1," : "0,") + (trackLength + "\n"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
+            index++;
             updateTempFile(inputFilePath, tempFilePath);
         }
     }
@@ -169,5 +187,34 @@ public class Results extends JPanel implements HorseRaceWindowListener {
         }
 
         newMoneyLabel.setText("New Balance: " + balance);
+    }
+
+    public void updateStats(List<Horse> winners, Horse[] horsesInRace, int trackLength) {
+        JLabel statsTitle = new JLabel("Stats");
+        statsPanel.add(statsTitle);
+        statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
+        System.out.println(Arrays.toString(wins));
+        System.out.println(Arrays.toString(races));
+
+        for (int i = 0; i < horsesInRace.length; i++) {
+            JLabel horseName = new JLabel("Horse" + horsesInRace[i].getName());
+
+            JLabel speed = new JLabel(
+                    "Average Speed: "
+                            + Math.round((double) horsesInRace[i].getDistanceTravelled() / (double) trackLength * 100)
+                                    / 10.0
+                            + " mph");
+
+            JLabel timeTaken = new JLabel("Time Taken: " + horsesInRace[i].getDistanceTravelled() + " seconds");
+
+            double add = (winners.contains(horsesInRace[i])) ? 1.0 : 0.0;
+            JLabel winRate = new JLabel("Win Rate: " + ((double) wins[i] + (double) add) / (double) races[i]);
+
+            statsPanel.add(horseName);
+            statsPanel.add(speed);
+            statsPanel.add(timeTaken);
+            statsPanel.add(winRate);
+        }
+        add(statsPanel);
     }
 }

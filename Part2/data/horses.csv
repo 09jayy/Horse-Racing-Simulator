@@ -1,9 +1,9 @@
 NUMBER,SYMBOL,CONFIDENCE
-1,Horse_beige.png,0.2
-2,Horse_beige_cow.png,0.6
-3,Horse_black.png,0.8
+1,Horse_beige.png,0.8
+2,Horse_beige_cow.png,0.5
+3,Horse_black.png,0.4
 4,Horse_black_cow.png,0.5
-5,Horse_brown.png,0.3
-6,Horse_brown_cow.png,0.3
-7,Horse_cow.png,0.3
-8,Horse_white.png,0.4
+5,Horse_brown.png,0.6
+6,Horse_brown_cow.png,0.4
+7,Horse_cow.png,0.6
+8,Horse_white.png,0.5
