@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class HorseRacingSim extends JFrame {
-    public static HorseRaceWindow raceWindow;
+    private static HorseRaceWindow raceWindow;
 
     public HorseRacingSim() {
         setTitle("Horse Race Simulator");
@@ -19,6 +19,10 @@ public class HorseRacingSim extends JFrame {
         add(new BetMenu());
 
         raceWindow = new HorseRaceWindow();
+    }
+
+    public static HorseRaceWindow getRaceWindow() {
+        return raceWindow;
     }
 
     public static void main(String[] args) {
