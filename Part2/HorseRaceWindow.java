@@ -25,10 +25,10 @@ public class HorseRaceWindow extends JFrame implements BetMenuListener {
         BetMenu.addBetMenuListener(this);
     }
 
-    public void createWindowElements(int trackLength, Horse[] horsesInRace) {
+    public void createWindowElements(int trackLength, Horse[] horsesInRace, String trackColour) {
         JPanel titlePanel = new JPanel(null);
         racePanel = new JPanel(null);
-        racePanel.setBackground(Color.GREEN);
+        racePanel.setBackground(setColour(trackColour));
         racePanel.setSize(trackLength, horsesInRace.length);
 
         JLabel title = new JLabel("HORSE RACE SIMULATOR");
@@ -60,6 +60,19 @@ public class HorseRaceWindow extends JFrame implements BetMenuListener {
         add(titlePanel);
     }
 
+    private Color setColour(String trackColour) {
+        switch (trackColour) {
+            case "Green":
+                return Color.GREEN;
+            case "Blue":
+                return Color.BLUE;
+            case "Red":
+                return Color.RED;
+            default:
+                return Color.GREEN;
+        }
+    }
+
     public void addHorses(JPanel racePanel, Horse[] horsesInRace) {
         horseLabels = new JLabel[horsesInRace.length];
         for (int i = 0; i < horsesInRace.length; i++) {
@@ -70,12 +83,12 @@ public class HorseRaceWindow extends JFrame implements BetMenuListener {
         }
     }
 
-    public void startRace(int trackLength, Horse[] horsesInRace, JTextField[] betFields) {
+    public void startRace(int trackLength, Horse[] horsesInRace, JTextField[] betFields, String trackColour) {
         winners = new ArrayList<>();
 
         setSize(((trackLength + 1) * 72) + 200, horsesInRace.length * 90 + 100); // Set size of window
         HorseRacingSim.getRaceWindow().setVisible(true);
-        createWindowElements(trackLength, horsesInRace);
+        createWindowElements(trackLength, horsesInRace, trackColour);
         addHorses(racePanel, horsesInRace);
 
         int delay = 100; // Delay in ms

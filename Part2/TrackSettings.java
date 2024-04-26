@@ -13,6 +13,7 @@ public class TrackSettings extends JPanel {
     private static JSlider trackLengthSlider;
     private static JCheckBox[] selectedHorses;
     private static List<TrackSettingsListener> listeners = new ArrayList<>();
+    private static JComboBox<String> trackColour;
 
     public TrackSettings() {
         final int NUM_HORSES = 8;
@@ -48,6 +49,13 @@ public class TrackSettings extends JPanel {
             selectedHorses[i] = new JCheckBox("Horse " + (i + 1));
         }
 
+        // track color
+        trackColour = new JComboBox<>();
+        trackColour.addItem("Green");
+        trackColour.addItem("Blue");
+        trackColour.addItem("Red");
+        trackColour.setMaximumSize(new Dimension(100, 30));
+
         // Back and Next buttons
         JButton backButton = new JButton("Back");
         backButton.addActionListener(new ActionListener() {
@@ -69,6 +77,7 @@ public class TrackSettings extends JPanel {
         // adding elements
         add(trackLengthSlider);
         add(trackLengthLabel);
+        add(trackColour);
 
         for (int i = 0; i < NUM_HORSES; i++) {
             add(selectedHorses[i]);
@@ -108,7 +117,8 @@ public class TrackSettings extends JPanel {
                 }
             }
 
-            listener.updateTrackAndHorses(trackLengthSlider.getValue(), selectedHorsesList);
+            listener.updateTrackAndHorses(trackLengthSlider.getValue(), selectedHorsesList,
+                    trackColour.getSelectedItem().toString());
         }
     }
 }

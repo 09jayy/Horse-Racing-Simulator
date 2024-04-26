@@ -14,6 +14,7 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
     private JLabel trackLengthLabel;
     private JLabel selectedHorsesLabel;
     private JPanel betPanel;
+    private static String trackColour;
     private static JTextField[] betFields;
     private static Horse[] horsesInRace;
     private static int trackLength;
@@ -60,7 +61,8 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
     }
 
     // Update the label when trackLength changes
-    public void updateTrackAndHorses(int newTrackLength, List<Integer> newHorsesInRace) {
+    public void updateTrackAndHorses(int newTrackLength, List<Integer> newHorsesInRace, String newTrackColour) {
+        trackColour = newTrackColour;
         trackLengthLabel.setText("Track Length: " + newTrackLength);
         selectedHorsesLabel.setText("Selected Horses: " + formatHorses(newHorsesInRace));
         trackLength = newTrackLength;
@@ -148,7 +150,7 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
     public static void notifyListeners() {
         System.out.println("Notifying listeners");
         for (BetMenuListener listener : listeners) {
-            listener.startRace(trackLength, horsesInRace, betFields);
+            listener.startRace(trackLength, horsesInRace, betFields, trackColour);
         }
     }
 
