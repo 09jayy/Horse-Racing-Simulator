@@ -3,10 +3,10 @@ package Part2;
 import javax.swing.*;
 import java.awt.*;
 
-public class HorseRacingSim extends JFrame {
+public class startRaceGUI extends JFrame {
     private static HorseRaceWindow raceWindow;
 
-    public HorseRacingSim() {
+    public startRaceGUI() {
         setTitle("Horse Race Simulator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 800);
@@ -27,7 +27,7 @@ public class HorseRacingSim extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            HorseRacingSim horseRace = new HorseRacingSim();
+            startRaceGUI horseRace = new startRaceGUI();
             horseRace.setVisible(true);
         });
     }

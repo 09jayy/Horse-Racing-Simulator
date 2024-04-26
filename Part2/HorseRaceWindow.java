@@ -87,7 +87,7 @@ public class HorseRaceWindow extends JFrame implements BetMenuListener {
         winners = new ArrayList<>();
 
         setSize(((trackLength + 1) * 72) + 200, horsesInRace.length * 90 + 100); // Set size of window
-        HorseRacingSim.getRaceWindow().setVisible(true);
+        startRaceGUI.getRaceWindow().setVisible(true);
         createWindowElements(trackLength, horsesInRace, trackColour);
         addHorses(racePanel, horsesInRace);
 
