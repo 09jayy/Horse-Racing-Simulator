@@ -2,16 +2,24 @@
 
 ## Running Program Instructions
 
-**Preconditions**
+### Preconditions
 
 - Install Java
 - Install JDK (This program has been compiled using version 22, updating may be needed)
 
-**Instructions**
+### Instructions
+
+**GUI Race**
 
 1. Clone repository using `git clone https://github.com/09jayy/Horse-Racing-Simulator` , alternatively download
 1. Navigate to directory: `Horse-Racing-Simulator/Part2/` within terminal
 1. Run `java Part2.startRaceGUI` within terminal
+
+**Command Line Race**
+
+1. Clone repository using `git clone https://github.com/09jayy/Horse-Racing-Simulator` , alternatively download
+1. Navigate to directory: `Horse-Racing-Simulator/Part1/` within terminal
+1. Run `java race` within terminal
 
 ## Usage Guidelines
 

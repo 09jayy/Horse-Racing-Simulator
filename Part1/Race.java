@@ -304,9 +304,9 @@ public class Race {
     public static void main(String[] args)
             throws ArguementOutofBounds, InvalidAssignment {
         Race race = new Race(10);
-        race.addHorse(new Horse('a', "PIPPI", 0.1), 1);
-        race.addHorse(new Horse('b', "KOKOMO", 0.8), 2);
-        // race.addHorse(new Horse('c', "Horsey", 0.9), 3);
+        race.addHorse(new Horse('a', "PIPPI", 0.4), 1);
+        race.addHorse(new Horse('b', "KOKOMO", 0.6), 2);
+        race.addHorse(new Horse('c', "Horsey", 0.5), 3);
         race.startRace();
     }
 }
