@@ -4,15 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Custom exception for when there are not enough horses in the race
- */
-class InsufficientHorseException extends Exception {
-    public InsufficientHorseException(String message) {
-        super(message);
-    }
-}
-
-/**
  * Custom exception for invalid input values
  */
 class ArguementOutofBounds extends Exception {
@@ -95,32 +86,41 @@ public class Race {
      * then repeatedly moved forward until the
      * race is finished
      */
-    public void startRace() throws InsufficientHorseException {
-        // error checks - check there are 3 horses in the race
-        if (lane1Horse == null || lane2Horse == null || lane3Horse == null) {
-            throw new InsufficientHorseException("There are not enough horses - required 3 exactly");
-        }
-
+    public void startRace() {
         // declare a local variable to tell us when the race is finished
         boolean finished = false;
         List<Horse> winners = new ArrayList<>();
 
         // reset all the lanes (all horses not fallen and back to 0).
-        lane1Horse.goBackToStart();
-        lane2Horse.goBackToStart();
-        lane3Horse.goBackToStart();
+        if (lane1Horse != null) {
+            lane1Horse.goBackToStart();
+        }
+        if (lane2Horse != null) {
+            lane2Horse.goBackToStart();
+        }
+        if (lane3Horse != null) {
+            lane3Horse.goBackToStart();
+        }
 
         while (!finished) {
             // move each horse
-            moveHorse(lane1Horse);
-            moveHorse(lane2Horse);
-            moveHorse(lane3Horse);
+            if (lane1Horse != null) {
+                moveHorse(lane1Horse);
+            }
+            if (lane2Horse != null) {
+                moveHorse(lane2Horse);
+            }
+            if (lane3Horse != null) {
+                moveHorse(lane3Horse);
+            }
 
             // set any of the three horses has won the race is finished
             winners = findWinner(winners);
 
             // if any of the three horses has won the race is finished
-            if (!winners.isEmpty() || (lane1Horse.hasFallen() && lane2Horse.hasFallen() && lane3Horse.hasFallen())) {
+            if (!winners.isEmpty()
+                    || (lane1Horse == null || lane1Horse.hasFallen()) && (lane2Horse == null || lane2Horse.hasFallen())
+                            && (lane3Horse == null || lane3Horse.hasFallen())) {
                 finished = true;
             }
 
@@ -165,13 +165,13 @@ public class Race {
      * @return
      */
     private List<Horse> findWinner(List<Horse> winners) {
-        if (raceWonBy(lane1Horse)) {
+        if (lane1Horse != null && raceWonBy(lane1Horse)) {
             winners.add(lane1Horse);
         }
-        if (raceWonBy(lane2Horse)) {
+        if (lane2Horse != null && raceWonBy(lane2Horse)) {
             winners.add(lane2Horse);
         }
-        if (raceWonBy(lane3Horse)) {
+        if (lane3Horse != null && raceWonBy(lane3Horse)) {
             winners.add(lane3Horse);
         }
 
@@ -232,14 +232,20 @@ public class Race {
         multiplePrint('=', raceLength + 3); // top edge of track
         System.out.println();
 
-        printLane(lane1Horse);
-        System.out.println();
+        if (lane1Horse != null) {
+            printLane(lane1Horse);
+            System.out.println();
+        }
 
-        printLane(lane2Horse);
-        System.out.println();
+        if (lane2Horse != null) {
+            printLane(lane2Horse);
+            System.out.println();
+        }
 
-        printLane(lane3Horse);
-        System.out.println();
+        if (lane3Horse != null) {
+            printLane(lane3Horse);
+            System.out.println();
+        }
 
         multiplePrint('=', raceLength + 3); // bottom edge of track
         System.out.println();
@@ -296,11 +302,11 @@ public class Race {
     }
 
     public static void main(String[] args)
-            throws InsufficientHorseException, ArguementOutofBounds, InvalidAssignment {
-        Race race = new Race(20);
-        race.addHorse(new Horse('a', "PIPPI", 0.9), 1);
-        race.addHorse(new Horse('b', "KOKOMO", 0.9), 2);
-        race.addHorse(new Horse('c', "Horsey", 0.9), 3);
+            throws ArguementOutofBounds, InvalidAssignment {
+        Race race = new Race(10);
+        race.addHorse(new Horse('a', "PIPPI", 0.1), 1);
+        race.addHorse(new Horse('b', "KOKOMO", 0.8), 2);
+        // race.addHorse(new Horse('c', "Horsey", 0.9), 3);
         race.startRace();
     }
 }
