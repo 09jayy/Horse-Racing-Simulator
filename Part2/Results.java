@@ -247,7 +247,9 @@ public class Results extends JPanel implements HorseRaceWindowListener {
             JLabel timeTaken = new JLabel("Time Taken: " + horsesInRace[i].getDistanceTravelled() + " seconds");
 
             double add = (winners.contains(horsesInRace[i])) ? 1.0 : 0.0;
-            JLabel winRate = new JLabel("Win Rate: " + ((double) wins[i] + (double) add) / (double) races[i]);
+            double winRateValue = ((double) wins[i] + (double) add) / races[i];
+            String winRateText = String.format("Win Rate: %.2f", winRateValue); // Formats win rate to 2 decimal places
+            JLabel winRate = new JLabel(winRateText);
 
             statsPanel.add(horseName);
             statsPanel.add(speed);
