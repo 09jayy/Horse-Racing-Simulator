@@ -11,7 +11,7 @@
 
 1. Clone repository using `git clone https://github.com/09jayy/Horse-Racing-Simulator` , alternatively download
 1. Navigate to directory: `Horse-Racing-Simulator/Part2/` within terminal
-1. Run `java Part2.HorseRacingSim` within terminal
+1. Run `java Part2.startRaceGUI` within terminal
 
 ## Usage Guidelines
 
