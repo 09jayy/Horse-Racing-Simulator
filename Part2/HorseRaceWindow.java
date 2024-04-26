@@ -136,7 +136,6 @@ public class HorseRaceWindow extends JFrame implements BetMenuListener {
 
                 if (finished || fallenCount == horsesInRace.length) {
                     ((Timer) e.getSource()).stop(); // Stop the timer when the race is finished
-                    System.out.println(winners.toString());
 
                     if (fallenCount == horsesInRace.length) {
                         finishLabel = new JLabel("All horses have fallen!");
@@ -173,7 +172,6 @@ public class HorseRaceWindow extends JFrame implements BetMenuListener {
             // so if you double the confidence, the probability that it will fall is *2
             if (Math.random() < (0.1 * theHorse.getConfidence() * theHorse.getConfidence())) {
                 theHorse.fall();
-                System.out.println(theHorse.toString() + " has fallen!");
                 theHorse.setConfidence(
                         (theHorse.getConfidence() > 0.1) ? ((theHorse.getConfidence() * 10 - 1) / 10) : 0.1);
                 return true;

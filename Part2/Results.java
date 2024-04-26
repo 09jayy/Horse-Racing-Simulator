@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.List;
 import java.io.*;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 public class Results extends JPanel implements HorseRaceWindowListener {
@@ -49,8 +48,6 @@ public class Results extends JPanel implements HorseRaceWindowListener {
 
     public void updateResults(List<Horse> winners, Horse[] horsesInRace, int trackLength, JTextField[] betFields) {
         // Update the results
-        System.out.println("Results updated");
-
         wins = new int[horsesInRace.length];
         races = new int[horsesInRace.length];
 
@@ -179,7 +176,6 @@ public class Results extends JPanel implements HorseRaceWindowListener {
                 balance -= (!betFields[i].getText().isEmpty()) ? Integer.parseInt(betFields[i].getText()) : 0;
             }
         }
-        System.out.println(balance);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("Part2/data/money.txt"))) {
             writer.write(Integer.toString(balance));
@@ -212,7 +208,6 @@ public class Results extends JPanel implements HorseRaceWindowListener {
         }
 
         updateTempFile(inputFilePath, tempFilePath);
-        System.out.println(moneyHistory.toString());
         displayBetHistory(moneyHistory);
     }
 
@@ -232,8 +227,6 @@ public class Results extends JPanel implements HorseRaceWindowListener {
         JLabel statsTitle = new JLabel("Stats");
         statsPanel.add(statsTitle);
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
-        System.out.println(Arrays.toString(wins));
-        System.out.println(Arrays.toString(races));
 
         for (int i = 0; i < horsesInRace.length; i++) {
             JLabel horseName = new JLabel("Horse" + horsesInRace[i].getName());

@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -148,7 +147,6 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
     }
 
     public static void notifyListeners() {
-        System.out.println("Notifying listeners");
         for (BetMenuListener listener : listeners) {
             listener.startRace(trackLength, horsesInRace, betFields, trackColour);
         }
@@ -193,14 +191,12 @@ public class BetMenu extends JPanel implements TrackSettingsListener {
                                 + horsesInRace[i].getConfidence());
                 double odd = ((double) numWins / (double) numRaces) * ((double) allRaceLength / (double) numRaces)
                         * ((double) horsesInRace[i].getConfidence());
-                System.out.println(odd);
                 odds[i] = odd;
                 reader.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        System.out.println(Arrays.toString(odds));
         return odds;
     }
 }
